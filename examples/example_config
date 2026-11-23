@@ -1,0 +1,29 @@
+# Example SSH config — try the CLI against this file with --config examples/example_config
+# (copy it somewhere first if you want to test add/remove on it)
+
+# Defaults for every host
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    StrictHostKeyChecking accept-new
+
+# Production web server
+Host web prod-web
+    HostName 203.0.113.10
+    User deploy
+    Port 2222
+    IdentityFile ~/.ssh/id_ed25519
+
+# All staging machines share one pattern
+Host *.staging.example.com
+    User staging
+    IdentityFile ~/.ssh/staging_key
+    ProxyJump bastion
+
+Host bastion
+    HostName bastion.example.com
+    User admin
+
+# A Match block (parsed and listed, but not evaluated by `resolve`)
+Match user deploy
+    ForwardAgent yes
